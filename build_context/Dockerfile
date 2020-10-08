@@ -1,30 +1,32 @@
 # Changed from original - end: don't inherit from debian:jessie, because mysql-server-5.7 don't exist on debian:jessie arm apt-get repo
-FROM arm32v7/ubuntu:bionic
+FROM ubuntu:bionic
 # Changed from original - end
 # Changed from original - start: add one line to override the maintainer
 LABEL authors="<Dirk.Meihoefer@wago.com>,<Sergei.Ikkert@wago.com>"
-#COPY wago.crt /usr/local/share/ca-certificates/
+LABEL org.label-schema.vcs-url="https://github.com/WAGO/mysql"
 # Changed from original - end
+#COPY wago.crt /usr/local/share/ca-certificates/
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd -r mysql && useradd -r -g mysql mysql
 
-# Changed from original - start: upgrade to 1.12 (was inspired by https://github.com/rothgar/rpi-wordpress/blob/master/mysql/Dockerfile)
+# Changed from original - start: upgrade to 1.9 (was inspired by https://github.com/rothgar/rpi-wordpress/blob/master/mysql/Dockerfile)
 # add gosu for easy step-down from root
 ENV GOSU_VERSION=1.12
+# 1.9
 RUN set -x \
-	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates wget \
-	&& wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
+	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates wget gpg && rm -rf /var/lib/apt/lists/*
+
+RUN wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
 	&& chmod +x /usr/local/bin/gosu \
 	&& gosu nobody true \
-	&& apt-get purge -y --auto-remove wget \
+#	&& rm /usr/local/share/ca-certificates/wago.crt \
+#	&& update-ca-certificates --fresh \
+	&& apt-get purge -y --auto-remove ca-certificates wget \
 	&& rm -rf /var/lib/apt/lists/*
 # Changed from original - end: upgrade to 1.12 and don't check asc file (was inspired by https://github.com/rothgar/rpi-wordpress/blob/master/mysql/Dockerfile)
 
 RUN mkdir /docker-entrypoint-initdb.d
-
-# RUN cat /etc/apt/sources.list
-# RUN cat /etc/apt/sources.list.d/ubuntu-esm-infra-trusty.list
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 # for MYSQL_RANDOM_ROOT_PASSWORD
@@ -83,22 +85,11 @@ RUN { \
 
 VOLUME /var/lib/mysql
 
-# ENV MYSQL_MAJOR 5.5
-# ADD https://raw.githubusercontent.com/docker-library/mysql/master/${MYSQL_MAJOR}/docker-entrypoint.sh /usr/local/bin/
-# RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
-#  && chown mysql:mysql /usr/local/bin/docker-entrypoint.sh \
-#  && ln -s usr/local/bin/docker-entrypoint.sh /entrypoint.sh # backwards compat
-# # Changed from original - start: on ubuntu, /usr/local/bin is not in the path
-# ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-# # Changed from original - end: on ubuntu, /usr/local/bin is not in the path
-
-# ADD https://raw.githubusercontent.com/docker-library/mysql/master/${MYSQL_MAJOR}/docker-entrypoint.sh /usr/local/bin/
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+ENV MYSQL_MAJOR 5.7
+ADD https://raw.githubusercontent.com/docker-library/mysql/master/${MYSQL_MAJOR}/docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
  && chown mysql:mysql /usr/local/bin/docker-entrypoint.sh \
  && ln -s usr/local/bin/docker-entrypoint.sh /entrypoint.sh # backwards compat
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-
 
 # Changed from original - start: add tzdata package to fix a timezone blocking issue at startup
 # (according to https://serverfault.com/questions/511821/how-to-update-install-zoneinfo-timezone-database-on-centos)
@@ -107,14 +98,12 @@ ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 # make: *** [test] Error 1
 RUN ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata && rm -rf /var/lib/apt/lists/*
 # Changed from original - end
-
-
-EXPOSE 3306
-CMD ["mysqld"]
-
 # Changed from original: next line was added
 # (inspired by https://github.com/rothgar/rpi-wordpress/blob/master/mysql/Dockerfile)
 ADD mysql.cnf /etc/mysql/conf.d/my.cnf
 
-LABEL \
-	org.label-schema.vcs-url="https://github.com/WAGO/mysql"
+EXPOSE 3306
+# Changed from original - start: on ubuntu, /usr/local/bin is not in the path
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+# Changed from original - end: on ubuntu, /usr/local/bin is not in the path
+CMD ["mysqld"]
