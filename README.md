@@ -1,6 +1,12 @@
-# mysql
+# MySQL
 
-# How to run mysql container
+
+<div style="text-align: left" >
+<img src="images/mysql-on-pfc.png"
+     alt="install docker" width="300"/>
+</div>
+
+# How to run MySQL container
 
 ## Prerequisites for tutorial
 - Preinstalled SSH Client (e.g. https://www.putty.org/)
@@ -21,14 +27,17 @@ docker ps # to see all running container (no container should run)
 docker images # to see all preinstalled images
  ```
 
- ## Get prebuild mysql image
+ ## Get prebuild MySQL image
 ```bash
 docker pull wagoautomation/mysql 
  ```
 
- ## Start a mysql server instance
+ ## Start a MySQL server instance
  ```bash
+ 
 docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw wagoautomation/mysql
+                            or
+docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=wago_db wagoautomation/mysql 
 ```
 
 ## Environment Variables
@@ -36,12 +45,12 @@ When you start the mysql image, you can adjust the configuration of the MySQL in
 For a complete documentation see: https://hub.docker.com/_/mysql
 
 
-## How to access mysql container.
+## How to access MySQL container.
 
 ### E-Cokcpit "WagoAppSQL_MySQL"
-Use an exsample Project to access mysql database. 
+Use an exsample Project to access MySQL database. 
 see https://github.com/WAGO/mysql/blob/main/misc/WagoAppMySQL_Example.ecp
- 
+
 
 ### Adminer
 Any database management tool can be used for testing see (e.g https://hub.docker.com/_/adminer)
@@ -51,7 +60,7 @@ Any database management tool can be used for testing see (e.g https://hub.docker
 docker run --link mysql:db -p 8080:8080 adminer
 ```
 2. Open your browser on http://host:8080/
-3. Login and test mysql db.
+3. Login and test MySQL db.
  
 ### Node-Red
 Or use Wago-Node-Red containers with node-red-node-mysql nodes. 
