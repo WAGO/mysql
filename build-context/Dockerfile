@@ -5,7 +5,7 @@ FROM ubuntu:bionic
 LABEL authors="<Dirk.Meihoefer@wago.com>,<Sergei.Ikkert@wago.com>"
 LABEL org.label-schema.vcs-url="https://github.com/WAGO/mysql"
 # Changed from original - end
-#COPY wago.crt /usr/local/share/ca-certificates/
+# COPY wago.crt /usr/local/share/ca-certificates/
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd -r mysql && useradd -r -g mysql mysql
@@ -20,8 +20,8 @@ RUN set -x \
 RUN wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
 	&& chmod +x /usr/local/bin/gosu \
 	&& gosu nobody true \
-	#	&& rm /usr/local/share/ca-certificates/wago.crt \
-	#	&& update-ca-certificates --fresh \
+	# && rm /usr/local/share/ca-certificates/wago.crt \
+	# && update-ca-certificates --fresh \
 	&& apt-get purge -y --auto-remove ca-certificates wget \
 	&& rm -rf /var/lib/apt/lists/*
 # Changed from original - end: upgrade to 1.12 and don't check asc file (was inspired by https://github.com/rothgar/rpi-wordpress/blob/master/mysql/Dockerfile)
@@ -76,6 +76,7 @@ RUN { \
 	&& chown -R mysql:mysql /var/lib/mysql /var/run/mysqld \
 	# ensure that /var/run/mysqld (used for socket and lock files) is writable regardless of the UID our mysqld instance ends up having at runtime
 	&& chmod 777 /var/run/mysqld \
+	&& chmod 777 /etc/mysql/conf.d \
 	# comment out a few problematic configuration values
 	&& find /etc/mysql/ -name '*.cnf' -print0 \
 	| xargs -0 grep -lZE '^(bind-address|log)' \

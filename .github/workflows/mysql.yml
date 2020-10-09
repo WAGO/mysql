@@ -28,15 +28,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - 
-        name: Debug Action
-        uses: hmarr/debug-action@v1.0.0
       -
         name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: ./build-context
-          file: Dockerfile
+          file: ./build-context/Dockerfile
           build-args: MYSQL_MAJOR=${{ env.MYSQL_MAJOR }}
           platforms: linux/arm/v7,linux/amd64
           push: true
