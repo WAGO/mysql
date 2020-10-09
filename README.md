@@ -2,7 +2,7 @@
 
 
 <div style="text-align: left" >
-<img src="images/mysql-on-pfc.png" alt="mysql on pfc" width="300"/>
+<img src="https://github.com/WAGO/mysql/blob/master/images/mysql-on-pfc.png?raw=true" alt="mysql on pfc" width="300"/>
 </div>
 
 # How to run MySQL container
