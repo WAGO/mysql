@@ -2,8 +2,7 @@
 
 
 <div style="text-align: left" >
-<img src="images/mysql-on-pfc.png"
-     alt="install docker" width="300"/>
+<img src="images/mysql-on-pfc.png" alt="mysql on pfc" width="300"/>
 </div>
 
 # How to run MySQL container
