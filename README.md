@@ -48,7 +48,7 @@ For a complete documentation see: https://hub.docker.com/_/mysql
 
 There are several ways to access the database contianer. Here are some possibilities. 
 
-### E-Cokcpit "WagoAppSQL_MySQL"
+### E-Cockpit "WagoAppSQL_MySQL"
 Use an exsample Project to access MySQL database. 
 see https://github.com/WAGO/mysql/blob/main/misc/WagoAppMySQL_Example.ecp
 
