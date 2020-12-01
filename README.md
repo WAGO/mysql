@@ -50,7 +50,7 @@ There are several ways to access the database contianer. Here are some possibili
 
 ### E-Cockpit "WagoAppSQL_MySQL"
 Use an exsample Project to access MySQL database. 
-see https://github.com/WAGO/mysql/blob/main/misc/WagoAppMySQL_Example.ecp
+see https://github.com/WAGO/mysql/raw/master/misc/WagoAppMySQL_Example.ecp
 
 
 ### Adminer
