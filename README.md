@@ -34,9 +34,9 @@ docker pull wagoautomation/mysql
  ## Start a MySQL server instance
  ```bash
  
-docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw wagoautomation/mysql
+docker run -d --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw wagoautomation/mysql
                             or
-docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=wago_db wagoautomation/mysql 
+docker run -d --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=wago_db wagoautomation/mysql 
 ```
 
 ## Environment Variables
